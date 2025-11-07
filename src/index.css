@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-100 text-gray-800 font-sans;
+  }
+}
+
+/* Tambahkan style kustom dari CSS asli Anda */
+@layer components {
+  .expression-question u {
+    text-decoration-thickness: 2px;
+    font-weight: 600;
+  }
+  .option-label:hover {
+    background-color: #f0f4f8;
+  }
+  .correct-answer-bg {
+    background-color: #f0fdf4;
+    border-left: 4px solid #22c55e;
+  }
+  .incorrect-answer-bg {
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+  }
+  .reading-passage {
+    @apply bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4 whitespace-pre-wrap leading-relaxed;
+  }
+  .ai-explanation-content {
+    @apply max-h-96 overflow-y-auto whitespace-pre-wrap p-3 bg-blue-50 border border-blue-100 rounded-lg;
+  }
+  .ai-chat-bubble {
+    @apply bg-gray-100 p-2 px-3 rounded-lg mt-2 max-w-[90%] clear-both break-words;
+  }
+  .ai-chat-bubble.user {
+    @apply bg-blue-100 float-right text-right;
+  }
+  .ai-chat-bubble.model {
+    @apply float-left text-left;
+  }
+  .ai-chat-bubble pre,
+  .ai-chat-bubble code {
+    @apply bg-gray-800 text-white p-3 rounded-md overflow-x-auto whitespace-pre-wrap break-normal font-mono text-sm block max-w-full;
+  }
+  .ai-chat-bubble h3 {
+    @apply text-lg font-semibold mt-2 mb-1;
+  }
+  .loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3b82f6;
+    @apply rounded-full w-6 h-6 animate-spin;
+  }
+  .source-btn {
+    @apply block w-full p-5 mb-4 border border-gray-300 rounded-xl bg-gray-50 text-left transition-all duration-200;
+  }
+  .source-btn:hover {
+    @apply bg-gray-100 border-gray-400;
+  }
+  .source-btn h3 {
+    @apply text-xl font-bold text-blue-700;
+  }
+  .source-btn p {
+    @apply text-gray-600;
+  }
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 z-50 flex items-center justify-center;
+  }
+  .modal-content {
+    @apply bg-white p-6 pt-5 rounded-xl shadow-xl max-w-md w-11/12;
+  }
+  .audio-player {
+    @apply flex items-center gap-3 bg-gray-50 border border-gray-200 p-3 rounded-lg mb-4;
+  }
+  .audio-player button {
+    @apply bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors duration-200;
+  }
+  .audio-player button:hover {
+    @apply bg-blue-700;
+  }
+  .audio-player button.replay-btn {
+    @apply bg-gray-500;
+  }
+  .audio-player button.replay-btn:hover {
+    @apply bg-gray-600;
+  }
+  .audio-player-label {
+    @apply font-medium text-gray-700;
+  }
+}
