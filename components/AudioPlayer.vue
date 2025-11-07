@@ -1,23 +1,59 @@
 <template>
-  <div class="audio-player">
-    <span class="audio-player-label">Audio Soal:</span>
-    <button type="button" @click="togglePlay" title="Play/Pause">
-      <span class="play-pause-btn-icon" v-html="playIcon"></span>
-    </button>
-    <button type="button" @click="replay" title="Replay" class="replay-btn">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        class="w-5 h-5"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M15.312 11.424a5.5 5.5 0 0 1-9.324 5.092l.966-.351A4.5 4.5 0 0 0 15 11.5a4.5 4.5 0 0 0-8.624-2.115l.946.463a.75.75 0 1 1-.41 1.456l-2.25-1.1a.75.75 0 0 1 0-1.389l2.25-1.1a.75.75 0 1 1 .41 1.456l-.946.463A5.5 5.5 0 0 1 15.312 11.424Z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    </button>
+  <div class="audio-player group">
+    <div class="flex items-center gap-4 flex-1">
+      <div class="flex items-center gap-2 min-w-0 flex-1">
+        <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse" v-if="isPlaying"></div>
+        <span class="audio-player-label truncate">{{ audioLabel }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          @click="togglePlay"
+          :title="isPlaying ? 'Pause' : 'Play'"
+          class="relative overflow-hidden"
+        >
+          <span class="play-pause-btn-icon" v-html="playIcon"></span>
+          <div
+            class="absolute inset-0 bg-white/20 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"
+          ></div>
+        </button>
+
+        <button
+          type="button"
+          @click="replay"
+          title="Replay"
+          class="replay-btn relative overflow-hidden"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-arrow-repeat"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
+            />
+          </svg>
+          <div
+            class="absolute inset-0 bg-white/20 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"
+          ></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="w-full mt-3" v-if="isPlaying">
+      <div class="progress-bar">
+        <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -34,43 +70,76 @@ const props = defineProps({
 const utterance = ref(null);
 const isPlaying = ref(false);
 const isPaused = ref(false);
+const progress = ref(0);
+const progressInterval = ref(null);
 
 const ICONS = {
-  PLAY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6.39-2.908a.75.75 0 0 1 .766.013l3.75 2.25a.75.75 0 0 1 0 1.29l-3.75 2.25a.75.75 0 0 1-1.153-.645V7.75a.75.75 0 0 1 .387-.657Z" clip-rule="evenodd" /></svg>`,
-  PAUSE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6-2.25A1.75 1.75 0 0 0 6.25 9.5v1A1.75 1.75 0 0 0 8 12.25h.25a1.75 1.75 0 0 0 1.75-1.75v-1A1.75 1.75 0 0 0 8.25 7.75H8Zm5.5 0A1.75 1.75 0 0 0 11.75 9.5v1A1.75 1.75 0 0 0 13.5 12.25h.25a1.75 1.75 0 0 0 1.75-1.75v-1A1.75 1.75 0 0 0 13.75 7.75h-.25Z" clip-rule="evenodd" /></svg>`,
+  PLAY: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/>
+</svg>`,
+  PAUSE: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5m3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5"/>
+</svg>`,
 };
 
 const playIcon = computed(() => (isPlaying.value ? ICONS.PAUSE : ICONS.PLAY));
+const audioLabel = computed(() => {
+  if (isPlaying.value) return "Memutar audio...";
+  if (isPaused.value) return "Audio dijeda";
+  return "Klik audio";
+});
+
+function startProgress() {
+  progress.value = 0;
+  clearInterval(progressInterval.value);
+  progressInterval.value = setInterval(() => {
+    if (progress.value < 100) {
+      progress.value += 0.5;
+    }
+  }, 100);
+}
+
+function stopProgress() {
+  clearInterval(progressInterval.value);
+  progress.value = 0;
+}
 
 function play() {
   if (isPaused.value) {
     window.speechSynthesis.resume();
     isPlaying.value = true;
     isPaused.value = false;
+    startProgress();
   } else {
-    window.speechSynthesis.cancel(); // Hentikan yang lain
+    window.speechSynthesis.cancel();
     utterance.value = new SpeechSynthesisUtterance(props.script);
     utterance.value.lang = "en-US";
+    utterance.value.rate = 0.9;
+    utterance.value.pitch = 1;
 
     utterance.value.onstart = () => {
       isPlaying.value = true;
       isPaused.value = false;
+      startProgress();
     };
 
     utterance.value.onend = () => {
       isPlaying.value = false;
       isPaused.value = false;
       utterance.value = null;
+      stopProgress();
     };
 
     utterance.value.onpause = () => {
       isPlaying.value = false;
       isPaused.value = true;
+      stopProgress();
     };
 
     utterance.value.onresume = () => {
       isPlaying.value = true;
       isPaused.value = false;
+      startProgress();
     };
 
     window.speechSynthesis.speak(utterance.value);
@@ -86,6 +155,7 @@ function stop() {
   isPlaying.value = false;
   isPaused.value = false;
   utterance.value = null;
+  stopProgress();
 }
 
 function togglePlay() {
@@ -98,10 +168,11 @@ function togglePlay() {
 
 function replay() {
   stop();
-  play();
+  setTimeout(() => play(), 100);
 }
 
 onUnmounted(() => {
-  stop(); // Pastikan audio berhenti saat pindah
+  stop();
+  clearInterval(progressInterval.value);
 });
 </script>

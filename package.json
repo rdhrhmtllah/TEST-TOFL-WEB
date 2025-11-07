@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/core": "^14.0.0",
+    "@vueuse/motion": "^3.0.3",
     "jspdf": "^2.5.1",
     "nodemon": "^3.1.10",
     "vue": "^3.4.21"
