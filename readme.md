@@ -1,76 +1,142 @@
-Aplikasi Latihan TOEFL Vue.js 3
+# 📚 Aplikasi Latihan TOEFL Vue.js 3
 
-Ini adalah aplikasi latihan TOEFL lengkap yang dibangun dengan Vue.js 3, Vite, dan Tailwind CSS, serta didukung oleh Gemini API.
+<div align="center">
 
-Fitur
+![Vue.js](https://img.shields.io/badge/Vue.js-3.5.24-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5.4.21-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4.18-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
-Buat soal tes kustom (Reading, Listening, Structure) menggunakan AI.
+Platform pembelajaran interaktif untuk persiapan ujian TOEFL dengan dukungan AI
 
-Impor/Ekspor soal tes dalam format JSON.
+[Demo](#) • [Dokumentasi](#dokumentasi) • [Report Bug](https://github.com/yourusername/vue-toefl-app/issues) • [Request Feature](https://github.com/yourusername/vue-toefl-app/issues)
 
-Timer dan skor otomatis.
+</div>
 
-Fitur audio player (TTS) untuk soal Listening.
+---
 
-Dapatkan penjelasan mendalam untuk setiap soal dari AI.
+## 📋 Daftar Isi
 
-Analisa kelemahan Anda di akhir tes, lengkap dengan saran.
+- [Tentang Proyek](#-tentang-proyek)
+- [Fitur Utama](#-fitur-utama)
+- [Screenshots](#-screenshots)
+- [Teknologi](#-teknologi)
+- [Instalasi](#-instalasi)
+- [Penggunaan](#-penggunaan)
+- [Konfigurasi](#-konfigurasi)
+- [Deployment](#-deployment)
+- [Struktur Proyek](#-struktur-proyek)
+- [Kontribusi](#-kontribusi)
+- [License](#-license)
+- [Kontak](#-kontak)
 
-Chat interaktif dengan AI untuk membahas hasil analisa Anda.
+---
 
-Download riwayat chat analisa sebagai PDF.
+## 🎯 Tentang Proyek
 
-Persiapan Proyek
+Aplikasi Latihan TOEFL adalah platform pembelajaran interaktif yang dibangun dengan **Vue.js 3** untuk membantu siswa mempersiapkan ujian TOEFL. Aplikasi ini dilengkapi dengan **AI (Gemini API)** untuk menghasilkan soal dinamis dan memberikan analisis mendalam terhadap hasil tes.
 
-Clone repositori:
+### 🎓 Keunggulan
 
-git clone <url-repo>
-cd vue-toefl-app
+- ✅ **AI-Powered**: Generate soal custom dan analisis mendalam
+- ✅ **Multi-Format**: Support Structure, Expression, Reading, dan Listening
+- ✅ **Interactive**: Real-time scoring dan feedback
+- ✅ **Flexible**: Import/Export soal dalam format JSON
+- ✅ **Comprehensive**: Analisis kelemahan dan rekomendasi soal
+- ✅ **Modern UI**: Responsive design dengan Tailwind CSS
 
-Install dependensi:
+---
 
-npm install
+## ✨ Fitur Utama
 
-Buat File Environment (.env):
+### 📝 Sistem Soal Multi-Source
 
-Salin file .env.example menjadi file baru bernama .env (atau .env.local).
+- **Soal Default**: 50 soal (Structure & Written Expression) siap pakai
+- **AI Generator**: Buat soal custom dengan prompt natural language
+- **Import/Export**: Muat dan simpan soal dalam format JSON
 
-Buka file .env yang baru Anda buat.
+### 🎯 Fitur Kuis Interaktif
 
-Masukkan Gemini API Key Anda setelah tanda =.
+- ⏱️ **Timer Fleksibel**: Atur durasi tes sesuai kebutuhan
+- 📊 **Scoring Otomatis**: Penilaian real-time dengan feedback
+- 🎧 **Audio Player**: Text-to-Speech untuk soal Listening
+- 📱 **Responsive**: Kompatibel di desktop, tablet, dan mobile
 
-VITE_GEMINI_API_KEY=AIzaSy...ANDA...
+### 🤖 AI Features
 
-Menjalankan Aplikasi
+- **Penjelasan Mendalam**: AI menjelaskan setiap soal dengan detail
+- **Chat Interaktif**: Tanya jawab lanjutan dengan AI
+- **Analisis Tes**: Evaluasi komprehensif hasil tes
+- **Rekomendasi Soal**: AI merekomendasikan soal sesuai kelemahan
 
-Mode Development (Pengembangan)
+### 📊 Analisis & Laporan
 
-npm run dev
+- **Skor Detail**: Persentase, waktu pengerjaan, dan soal salah
+- **Identifikasi Kelemahan**: Analisis pola kesalahan
+- **Saran Perbaikan**: Rekomendasi strategi belajar
+- **Export PDF**: Download riwayat chat analisis
 
-Aplikasi akan berjalan di http://localhost:8080.
+---
 
-Mode Production (Produksi)
+## 📸 Screenshots
 
-Build aplikasi:
+<div align="center">
 
-npm run build
+### 🏠 Halaman Utama
 
-Preview build:
+![Home](docs/images/home.png)
 
-npm run preview
+### 📝 Kuis Interface
 
-Menjalankan dengan Docker
+![Quiz](docs/images/quiz.png)
 
-Pastikan Anda memiliki Docker yang terinstal.
+### 📊 Hasil & Analisis
 
-Build Docker Image:
+![Results](docs/images/results.png)
 
-PENTING: Anda harus memasukkan API key Anda saat proses build.
+### 🤖 AI Generator
 
-docker build --build-arg "VITE_GEMINI_API_KEY=AIzaSy...ANDA..." -t toefl-app .
+![AI Generator](docs/images/ai-generator.png)
 
-Run Docker Container:
+</div>
 
-docker run -d -p 80:80 --name toefl-app-container toefl-app
+---
 
-Aplikasi sekarang akan dapat diakses di http://localhost.
+## 🛠 Teknologi
+
+### Frontend
+
+- **Vue.js 3.5.24** - Progressive JavaScript Framework
+- **Vite 5.4.21** - Next Generation Frontend Tooling
+- **Tailwind CSS 3.4.18** - Utility-First CSS Framework
+
+### Libraries & Tools
+
+- **jsPDF 2.5.2** - PDF generation
+- **Gemini API** - AI-powered features
+- **SpeechSynthesis API** - Text-to-Speech
+- **Composition API** - Vue 3 reactive system
+
+### DevOps
+
+- **Docker** - Containerization
+- **Nginx** - Web server for production
+- **Nodemon** - Development auto-reload
+
+---
+
+## 🚀 Instalasi
+
+### Prasyarat
+
+Pastikan Anda telah menginstal:
+
+- **Node.js** >= 18.0.0
+- **npm** >= 8.0.0
+- **Git**
+
+### Quick Start
+
+```bash
+
+```
