@@ -25,13 +25,15 @@ RUN npm run build
 FROM nginx:1.25-alpine AS final
 
 RUN rm -rf /etc/nginx/conf.d/*
-
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+# Tambahkan entrypoint untuk inject env
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 80
+ENTRYPOINT ["/entrypoint.sh"]
 
 
 # docker run -d \
