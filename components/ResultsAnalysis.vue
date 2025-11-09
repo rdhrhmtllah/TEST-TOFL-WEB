@@ -63,7 +63,7 @@
     </div>
 
     <!-- AI Analysis Section -->
-    <div class="card">
+    <div class="card" id="analisis">
       <div class="text-center mb-8">
         <div
           class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg"
@@ -366,7 +366,7 @@
               </svg>
               Tanya lebih lanjut tentang analisamu:
             </label>
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-col md:flex-row">
               <input
                 type="text"
                 v-model="analysis.followUpInput"
@@ -379,7 +379,7 @@
               <button
                 type="button"
                 @click="handleAnalysisFollowUp"
-                class="bg-purple-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-purple-600 transition-all duration-300 disabled:opacity-50 flex items-center gap-2"
+                class="bg-purple-500 justify-center text-white font-semibold py-3 px-6 rounded-xl hover:bg-purple-600 transition-all duration-300 disabled:opacity-50 flex items-center gap-2"
                 :disabled="analysis.isLoading || !analysis.followUpInput"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

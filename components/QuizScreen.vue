@@ -369,7 +369,7 @@
                 <!-- Quick Actions -->
                 <div class="flex gap-2 mt-3">
                   <button
-                    @click="showAnalysis = true"
+                    @click="scrollToAnalysis"
                     class="flex-1 bg-blue-500 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
                   >
                     Lihat Analisis
@@ -802,6 +802,19 @@ const readingQuestions = computed(() =>
 const listeningQuestions = computed(() =>
   indexedQuestions.value.filter((q) => q.data?.type === "listening")
 );
+
+function scrollToAnalysis() {
+  const analysisElement = document.getElementById("analisis");
+
+  if (analysisElement) {
+    analysisElement.scrollIntoView({
+      behavior: "smooth", // Membuat transisi scroll menjadi mulus
+      block: "start", // Mengatur agar elemen berada di bagian atas viewport
+    });
+    // Opsional: Anda mungkin ingin tetap mengatur showAnalysis = true
+    this.showAnalysis = true;
+  }
+}
 
 // Functions
 function updateAnswer(questionIndex, value) {
