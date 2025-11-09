@@ -495,8 +495,17 @@ const analysisSchema = {
   required: ["analysis", "suggestions", "recommendedQuestions"],
 };
 
-const analysisFollowUpInstruction =
-  "Anda adalah tutor TOEFL ahli. Berbicaralah dalam Bahasa Indonesia. Bantu siswa memahami analisa tes mereka, berikan saran belajar, dan jika diminta soal latihan baru, berikan dalam format JSON di dalam ```json ... ```.";
+let analysisFollowUpInstruction =
+  "Anda adalah tutor TOEFL ahli. Berbicaralah dalam Bahasa Indonesia. Bantu siswa memahami analisa tes mereka, berikan saran belajar, dan jika diminta soal latihan baru, berikan dalam format JSON di dalam format :";
+
+analysisFollowUpInstruction += `
+  FORMAT WAJIB:
+  1. type: HARUS 'structure', 'expression', 'reading', 'listening', 'writing', atau 'grammar'
+  2. passage: HANYA untuk reading/listening (jika tidak ada, gunakan "")
+  3. question: Untuk structure harus ada '______', untuk expression gunakan <u>teks (A)</u> format
+  4. options: 4 pilihan ["(A)...", "(B)..."] untuk structure/expression/reading/listening/grammar
+  5. answer: A, B, C, atau D (atau "" untuk writing/speaking)
+  6. Semua dalam Bahasa Inggris kecuali instruksi khusus`;
 
 async function getTestAnalysis() {
   analysis.isLoading = true;
@@ -512,8 +521,15 @@ async function getTestAnalysis() {
     });
   }
 
-  prompt += `\n\nBerdasarkan ini, berikan:\n1. Analisa mendalam kelemahan siswa\n2. 3-5 saran perbaikan spesifik\n3. ${recomCount.value} soal latihan baru yang menargetkan kelemahan tersebut\n\nFormat JSON dengan properti: analysis, suggestions, recommendedQuestions`;
-
+  prompt += `\n\nBerdasarkan ini, berikan:\n1. Analisa mendalam kelemahan siswa\n2. 3-5 saran perbaikan spesifik\n3. ${recomCount.value} soal latihan baru yang menargetkan kelemahan tersebut\n\nFormat JSON dengan properti:`;
+  prompt += `
+  FORMAT WAJIB:
+  1. type: HARUS 'structure', 'expression', 'reading', 'listening', 'writing', atau 'grammar'
+  2. passage: HANYA untuk reading/listening (jika tidak ada, gunakan "")
+  3. question: Untuk structure harus ada '______', untuk expression gunakan <u>teks (A)</u> format
+  4. options: 4 pilihan ["(A)...", "(B)..."] untuk structure/expression/reading/listening/grammar
+  5. answer: A, B, C, atau D (atau "" untuk writing/speaking)
+  6. Semua dalam Bahasa Inggris kecuali instruksi khusus`;
   try {
     const jsonString = await callGemini(prompt, analysisSchema);
     if (!jsonString) throw new Error("AI tidak merespons.");

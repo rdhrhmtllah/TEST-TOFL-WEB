@@ -101,9 +101,7 @@
 
       <!-- Footer -->
       <footer class="text-center mt-12 pt-8 border-t border-gray-200/50">
-        <p class="text-gray-500 text-sm">
-          Dibuat dengan ❤️ untuk pembelajaran TOEFL yang lebih baik
-        </p>
+        <p class="text-gray-500 text-sm">2025 ©️Ridho Rahmatullah | @noir.gallery_</p>
       </footer>
     </div>
   </div>

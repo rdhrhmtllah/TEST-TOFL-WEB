@@ -1,5 +1,5 @@
 <template>
-  <div class="audio-player group">
+  <div class="audio-player group flex flex-col md:flex-row">
     <div class="flex items-center gap-4 flex-1">
       <div class="flex items-center gap-2 min-w-0 flex-1">
         <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse" v-if="isPlaying"></div>
@@ -7,6 +7,7 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <!-- Tombol Play/Pause -->
         <button
           type="button"
           @click="togglePlay"
@@ -19,6 +20,7 @@
           ></div>
         </button>
 
+        <!-- Tombol Replay -->
         <button
           type="button"
           @click="replay"
@@ -48,40 +50,73 @@
       </div>
     </div>
 
+    <!-- Pilih voice -->
+    <div class="mt-3">
+      <label class="text-sm text-gray-500">Pilih Suara:</label>
+      <select v-model="selectedVoiceName" class="border rounded p-1 w-full mt-1">
+        <option v-for="(v, i) in voices" :key="i" :value="v.name">
+          {{ v.name }} ({{ v.lang }}) {{ v.default ? "— DEFAULT" : "" }}
+        </option>
+      </select>
+    </div>
+
     <!-- Progress bar -->
     <div class="w-full mt-3" v-if="isPlaying">
-      <div class="progress-bar">
-        <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+      <div class="progress-bar bg-gray-200 rounded-full h-2 overflow-hidden">
+        <div
+          class="progress-fill bg-blue-500 h-full transition-all duration-300"
+          :style="{ width: progress + '%' }"
+        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onUnmounted, computed } from "vue";
+import { ref, computed, onUnmounted, watch } from "vue";
 
 const props = defineProps({
   script: {
     type: String,
     required: true,
   },
+  lang: {
+    type: String,
+    default: "en-US",
+  },
 });
 
+// State dasar
 const utterance = ref(null);
 const isPlaying = ref(false);
 const isPaused = ref(false);
 const progress = ref(0);
 const progressInterval = ref(null);
 
+// Voice list
+const voices = ref([]);
+const selectedVoiceName = ref(""); // voice yang dipilih user
+
+// Muat daftar voice
+function loadVoices() {
+  voices.value = window.speechSynthesis.getVoices();
+  if (!selectedVoiceName.value && voices.value.length > 0) {
+    const defaultVoice = voices.value.find((v) => v.lang.startsWith(props.lang)) || voices.value[0];
+    selectedVoiceName.value = defaultVoice.name;
+  }
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+// =========================== ICONS ===========================
 const ICONS = {
   PLAY: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/>
 </svg>`,
   PAUSE: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause-circle-fill" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5m3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5"/>
-</svg>/`,
+</svg>`,
 };
-
 const playIcon = computed(() => (isPlaying.value ? ICONS.PAUSE : ICONS.PLAY));
 const audioLabel = computed(() => {
   if (isPlaying.value) return "Memutar audio...";
@@ -89,21 +124,20 @@ const audioLabel = computed(() => {
   return "Klik audio";
 });
 
+// =========================== PROGRESS ===========================
 function startProgress() {
   progress.value = 0;
   clearInterval(progressInterval.value);
   progressInterval.value = setInterval(() => {
-    if (progress.value < 100) {
-      progress.value += 0.5;
-    }
+    if (progress.value < 100) progress.value += 0.5;
   }, 100);
 }
-
 function stopProgress() {
   clearInterval(progressInterval.value);
   progress.value = 0;
 }
 
+// =========================== AUDIO CONTROL ===========================
 function play() {
   if (isPaused.value) {
     window.speechSynthesis.resume();
@@ -112,10 +146,14 @@ function play() {
     startProgress();
   } else {
     window.speechSynthesis.cancel();
+
     utterance.value = new SpeechSynthesisUtterance(props.script);
-    utterance.value.lang = "en-US";
-    utterance.value.rate = 0.9;
-    utterance.value.pitch = 1;
+
+    const selected = voices.value.find((v) => v.name === selectedVoiceName.value);
+    utterance.value.voice = selected || voices.value[0];
+    utterance.value.lang = selected?.lang || props.lang;
+    utterance.value.rate = 1.1;
+    utterance.value.pitch = 3;
 
     utterance.value.onstart = () => {
       isPlaying.value = true;
@@ -145,11 +183,9 @@ function play() {
     window.speechSynthesis.speak(utterance.value);
   }
 }
-
 function pause() {
   window.speechSynthesis.pause();
 }
-
 function stop() {
   window.speechSynthesis.cancel();
   isPlaying.value = false;
@@ -157,20 +193,16 @@ function stop() {
   utterance.value = null;
   stopProgress();
 }
-
 function togglePlay() {
-  if (isPlaying.value) {
-    pause();
-  } else {
-    play();
-  }
+  if (isPlaying.value) pause();
+  else play();
 }
-
 function replay() {
   stop();
   setTimeout(() => play(), 100);
 }
 
+// Cleanup
 onUnmounted(() => {
   stop();
   clearInterval(progressInterval.value);

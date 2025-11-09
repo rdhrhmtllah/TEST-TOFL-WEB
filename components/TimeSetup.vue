@@ -33,7 +33,8 @@
         </div>
       </div>
       <div class="text-sm text-gray-600">
-        ⏱️ Rata-rata <strong>{{ Math.ceil((questionCount / 40) * 60) }}</strong> detik per soal
+        ⏱️ Rata-rata <strong>{{ Math.ceil((timeInMinutes / questionCount) * 60) }}</strong> detik
+        per soal
       </div>
     </div>
 

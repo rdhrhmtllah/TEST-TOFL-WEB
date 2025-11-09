@@ -76,7 +76,7 @@ function resetQuiz() {
   stopTimer();
   quizState.screen = "source";
   quizState.questions = [];
-  quizState.userAnswers = {};
+  quizState.userAnswers = [];
   quizState.score = 0;
   quizState.gradableQuestions = 0;
   quizState.incorrectQuestions = [];
@@ -108,6 +108,8 @@ function submitQuiz(isAutoSubmit = false) {
     currentGradable++;
     const userAnswer = quizState.userAnswers[index];
     const correctAnswer = item.answer;
+
+    console.log(`ini adalah jabawaban benar${correctAnswer}, ini jawaban asli nya ${userAnswer} `);
 
     if (userAnswer === correctAnswer) {
       currentScore++;

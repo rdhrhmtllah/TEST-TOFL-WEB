@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Mobile Top Bar (Compact) -->
     <div
-      class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-200"
+      class="lg:hidden sticky top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-200"
     >
       <div class="px-3 py-2">
         <div class="flex items-center justify-between">
@@ -226,8 +226,8 @@
       <!-- Mobile Sidebar -->
       <div
         :class="[
-          'lg:hidden fixed top-0 left-0 z-50 h-full w-full bg-white transform transition-transform duration-300',
-          showMobileSidebar ? 'translate-x-0' : '-translate-x-full',
+          'lg:hidden sticky top-0 left-0 z-50 h-full w-full bg-white transform transition-transform duration-300',
+          showMobileSidebar ? 'translate-x-0' : '-translate-x-full hidden',
         ]"
       >
         <div class="h-full flex flex-col">
@@ -426,6 +426,54 @@
               <div class="p-3 space-y-4">
                 <div
                   v-for="(question, index) in structureQuestions"
+                  :key="'s-' + index"
+                  :data-question-index="question.originalIndex"
+                  class="question-container"
+                >
+                  <QuizQuestion
+                    :question="question.data"
+                    :question-number="question.originalIndex + 1"
+                    :is-submitted="isSubmitted"
+                    :is-current="currentQuestionIndex === question.originalIndex"
+                    v-model="safeUserAnswers[question.originalIndex]"
+                    @update:modelValue="updateAnswer(question.originalIndex, $event)"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <!-- Structure Questions -->
+            <section
+              v-if="grammarQuestions.length > 0"
+              class="bg-white rounded-lg shadow-sm border border-gray-200"
+            >
+              <div class="p-3 border-b border-gray-100">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center">
+                    <svg
+                      class="w-3 h-3 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h2 class="text-base font-bold text-gray-800">Structure</h2>
+                  <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded"
+                    >{{ grammarQuestions.length }} soal</span
+                  >
+                </div>
+              </div>
+
+              <div class="p-3 space-y-4">
+                <div
+                  v-for="(question, index) in grammarQuestions"
                   :key="'s-' + index"
                   :data-question-index="question.originalIndex"
                   class="question-container"
@@ -658,13 +706,13 @@ const {
 
 // Safe computed properties
 const safeUserAnswers = computed(() => {
-  if (!userAnswers.value || !Array.isArray(userAnswers.value)) {
+  if (!userAnswers || !Array.isArray(userAnswers)) {
     if (localUserAnswers.value.length !== totalQuestions.value) {
       localUserAnswers.value = Array(totalQuestions.value).fill(null);
     }
     return localUserAnswers.value;
   }
-  return userAnswers.value;
+  return userAnswers;
 });
 
 const formattedTime = computed(() => {
@@ -679,6 +727,9 @@ const formattedTotalTime = computed(() => {
   return `${minutes} menit`;
 });
 
+const log = () => {
+  console.log("ini skor", score);
+};
 const percentage = computed(() => {
   return (gradableQuestions.value > 0 ? (score.value / gradableQuestions.value) * 100 : 0).toFixed(
     0
@@ -739,6 +790,9 @@ const indexedQuestions = computed(() => {
 const structureQuestions = computed(() =>
   indexedQuestions.value.filter((q) => q.data?.type === "structure")
 );
+const grammarQuestions = computed(() =>
+  indexedQuestions.value.filter((q) => q.data?.type === "grammar")
+);
 const expressionQuestions = computed(() =>
   indexedQuestions.value.filter((q) => q.data?.type === "expression")
 );
@@ -752,8 +806,8 @@ const listeningQuestions = computed(() =>
 // Functions
 function updateAnswer(questionIndex, value) {
   localUserAnswers.value[questionIndex] = value;
-  if (userAnswers.value && Array.isArray(userAnswers.value)) {
-    userAnswers.value[questionIndex] = value;
+  if (userAnswers) {
+    userAnswers[questionIndex] = value;
   }
 }
 

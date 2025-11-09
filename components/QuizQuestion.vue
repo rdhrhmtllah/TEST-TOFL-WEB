@@ -37,7 +37,7 @@
 
     <!-- Passage (for reading/listening) -->
     <div
-      v-if="question.passage && question.type === 'reading'"
+      v-if="question.passage && !question.type === 'reading'"
       class="reading-passage mb-6 transform hover:scale-[1.01] transition-transform duration-300"
     >
       <div class="flex items-center gap-2 mb-3">
@@ -58,6 +58,8 @@
     <AudioPlayer
       v-if="question.type === 'listening' && question.passage"
       :script="question.passage"
+      lang="en-US"
+      voice-name="Zira"
       class="mb-6"
     />
 

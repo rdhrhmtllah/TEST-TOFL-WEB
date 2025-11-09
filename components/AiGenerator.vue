@@ -163,10 +163,10 @@ async function generateQuestions() {
 "${prompt.value}"
 
 FORMAT WAJIB:
-1. type: HARUS 'structure', 'expression', 'reading', 'listening', 'writing', atau 'speaking'
+1. type: HARUS 'structure', 'expression', 'reading', 'listening', 'writing', 'grammar'
 2. passage: HANYA untuk reading/listening (jika tidak ada, gunakan "")
 3. question: Untuk structure harus ada '______', untuk expression gunakan <u>teks (A)</u> format
-4. options: 4 pilihan ["(A)...", "(B)..."] untuk structure/expression/reading/listening
+4. options: 4 pilihan ["(A)...", "(B)..."] untuk structure/expression/reading/listening/grammar
 5. answer: A, B, C, atau D (atau "" untuk writing/speaking)
 6. Semua dalam Bahasa Inggris kecuali instruksi khusus`;
 
